@@ -1,0 +1,6 @@
+{
+  "name": "Genesis Grupo S.A - Arquitetura",
+  "description": "Portfólio de arquitetura moderna, orçamentos rápidos e agendamento online para Genesis Grupo S.A em Huambo, Angola.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
