@@ -1,78 +1,49 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Header } from '@/components/Header';
-import { Hero } from '@/components/Hero';
-import { PortfolioSection } from '@/components/PortfolioSection';
-import { EstimatorSection } from '@/components/EstimatorSection';
-import { SchedulerSection } from '@/components/SchedulerSection';
-import { TestimonialsSection } from '@/components/TestimonialsSection';
-import { BlogSection } from '@/components/BlogSection';
-import { ContactSection } from '@/components/ContactSection';
-import { Footer } from '@/components/Footer';
-import { QuickActionFAB } from '@/components/QuickActionFAB';
-import { Project } from '@/lib/data';
+import { useState } from 'react';
+import {
+  ArrowRight, Building2, ChevronDown, Compass, Factory, Hammer,
+  Leaf, Scissors, Coffee, CarFront, ShoppingBag, BriefcaseBusiness,
+  Users, Ruler, ShieldCheck, Menu, X, Sparkles
+} from 'lucide-react';
 
-export default function Home() {
-  const [schedulerSubject, setSchedulerSubject] = useState<string>('');
+const branches = [
+  { n:'01', title:'Arquitetura & Design', icon:Building2, intro:'Projetamos espaços com identidade, funcionalidade e visão de futuro.', items:['Projetos de arquitetura','Habitação e edifícios comerciais','Arquitetura e design de interiores','Remodelação e reabilitação','Urbanismo e paisagismo','Projetos 3D e visualização arquitetónica','Renderização fotorealista','Projetos executivos e compatibilização','Consultoria arquitetónica'] },
+  { n:'02', title:'Engenharia', icon:Ruler, intro:'Soluções técnicas integradas para transformar projetos em estruturas viáveis.', items:['Engenharia civil','Engenharia elétrica','Engenharia hidráulica','Engenharia mecânica','Projetos de estruturas','Instalações elétricas e sanitárias','Climatização','Segurança contra incêndios','Orçamentação e medições','Planeamento e gestão de obras','Consultoria de engenharia'] },
+  { n:'03', title:'Construção', icon:Hammer, intro:'Execução, coordenação e gestão de obras com foco em qualidade e resultado.', items:['Construção de moradias','Construção de edifícios','Construção comercial e institucional','Construção industrial','Remodelação e reabilitação','Obras de acabamento','Estruturas de betão armado','Alvenaria e coberturas','Pavimentos e revestimentos','Instalações técnicas','Obras chave na mão'] },
+  { n:'04', title:'Fiscalização de Obras', icon:ShieldCheck, intro:'Acompanhamento técnico para garantir conformidade, controlo e transparência.', items:['Acompanhamento técnico','Controlo de qualidade','Controlo de materiais','Controlo de custos','Controlo de prazos','Verificação de conformidade','Medição de trabalhos executados','Relatórios técnicos','Acompanhamento de empreiteiros','Receção e entrega de obras'] },
+  { n:'05', title:'Consultoria', icon:BriefcaseBusiness, intro:'Decisões mais informadas para investidores, projetos e empreendimentos.', items:['Consultoria em arquitetura','Consultoria em engenharia','Consultoria imobiliária','Estudos de viabilidade','Estudos técnicos','Avaliação e análise de terrenos','Análise de projetos','Consultoria para investidores','Gestão de projetos','Planeamento de empreendimentos','Desenvolvimento imobiliário'] },
+  { n:'06', title:'Ateliê — Corte & Costura', icon:Scissors, intro:'Criação e confeção por medida para pessoas, empresas e instituições.', items:['Corte e costura por medida','Alfaiataria','Confeção de roupas','Vestuário personalizado','Uniformes profissionais','Uniformes escolares','Roupas corporativas','Ajustes e remodelação de peças','Design de vestuário','Produção por encomenda'] },
+  { n:'07', title:'Coworking Center', icon:Users, intro:'Um ambiente para trabalhar, reunir, criar projetos e desenvolver negócios.', items:['Espaços de trabalho partilhados','Escritórios privados','Salas de reunião','Salas para formação','Postos individuais','Endereço profissional','Espaços para startups','Espaços para freelancers','Espaços para empresas','Eventos e networking','Incubação de projetos'] },
+  { n:'08', title:'Carpe Diem — Café', icon:Coffee, intro:'Café, encontros e experiências num espaço pensado para convivência.', items:['Cafeteria','Café e bebidas quentes','Bebidas frias','Pequenos-almoços','Lanches','Pastelaria','Sanduíches','Refeições ligeiras','Catering','Serviço para eventos','Reuniões e encontros'] },
+  { n:'09', title:'American Dream', icon:Sparkles, intro:'Alimentação, lazer e experiências com uma identidade própria.', items:['Hambúrgueres','Fast food','Cafeteria','Snacks','Refeições rápidas','Bebidas','Take-away','Delivery','Catering','Organização de eventos','Espaço de lazer e convivência','Produtos personalizados da marca'] },
+  { n:'10', title:'Produtos & Marcas', icon:ShoppingBag, intro:'Uma frente transversal para produtos físicos, digitais e soluções sob encomenda.', items:['Produtos personalizados','Vestuário','Acessórios','Produtos de decoração','Materiais e artigos para arquitetura','Produtos corporativos','Brindes personalizados','Produtos digitais','E-books','Templates','Projetos e modelos digitais','Serviços sob encomenda'] },
+  { n:'11', title:'Car Wash', icon:CarFront, intro:'Lavagem, estética e detalhamento automóvel para particulares e empresas.', items:['Lavagem exterior','Lavagem interior','Lavagem completa','Aspiração e higienização','Lavagem de motor','Polimento automóvel','Enceramento e proteção','Tratamento de estofos','Higienização e desodorização','Car detailing','Jantes e pneus','Planos de manutenção','Agendamento online'] },
+  { n:'12', title:'Agricultura & Agronegócio', icon:Leaf, intro:'Produção, transformação e comercialização com visão de cadeia de valor.', items:['Produção agrícola','Hortaliças e frutas','Cereais','Raízes e tubérculos','Produção pecuária','Avicultura','Piscicultura e aquicultura','Transformação de produtos agrícolas','Comercialização e venda direta','Distribuição de produtos agrícolas','Consultoria agrícola','Projetos agrícolas','Sistemas de irrigação','Agricultura sustentável','Agro-processamento','Parcerias e investimentos'] }
+];
 
-  const handleScrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+function scrollToId(id:string){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
 
-  const handleSelectProjectForEstimate = (project: Project) => {
-    setSchedulerSubject(`Interesse no Projeto: ${project.title}`);
-    handleScrollToSection('orcamento');
-  };
-
-  return (
-    <div className="min-h-screen bg-stone-50 text-neutral-900 font-sans selection:bg-[#8B0000] selection:text-white relative">
-      {/* Sticky Header */}
-      <Header
-        onOpenEstimateModal={() => handleScrollToSection('orcamento')}
-        onOpenScheduleModal={() => handleScrollToSection('agendamento')}
-      />
-
-      {/* Main Content Area */}
-      <main>
-        {/* Hero Section */}
-        <Hero
-          onOpenEstimateModal={() => handleScrollToSection('orcamento')}
-          onOpenScheduleModal={() => handleScrollToSection('agendamento')}
-        />
-
-        {/* Portfolio Section */}
-        <PortfolioSection
-          onSelectEstimate={handleSelectProjectForEstimate}
-        />
-
-        {/* Interactive Estimator Section (Orçamentos Rápidos) */}
-        <EstimatorSection />
-
-        {/* Online Scheduling System (Agendamento Online) */}
-        <SchedulerSection initialSubject={schedulerSubject} />
-
-        {/* Client Testimonials (Depoimentos) */}
-        <TestimonialsSection />
-
-        {/* Architecture & Design Blog */}
-        <BlogSection />
-
-        {/* Contact Form & Company Details */}
-        <ContactSection />
-      </main>
-
-      {/* Footer with mandatory Genesis info */}
-      <Footer />
-
-      {/* Quick Action FAB for mobile and desktop */}
-      <QuickActionFAB
-        onOpenEstimateModal={() => handleScrollToSection('orcamento')}
-        onOpenScheduleModal={() => handleScrollToSection('agendamento')}
-      />
-    </div>
-  );
+export default function Home(){
+ const [open,setOpen]=useState<number|null>(0); const [mobileMenu,setMobileMenu]=useState(false);
+ return <main>
+  <header className="nav"><div className="wrap nav-inner">
+   <button className="brand" onClick={()=>scrollToId('inicio')} aria-label="Genesis Grupo"><span className="brand-mark">G</span><span><strong>GENESIS</strong><small>GRUPO S.A.</small></span></button>
+   <nav className={mobileMenu?'nav-links open':'nav-links'}>{[['grupo','O Grupo'],['ramos','Ramos'],['ecossistema','Ecossistema'],['contacto','Contacto']].map(([id,label])=><button key={id} onClick={()=>{scrollToId(id);setMobileMenu(false)}}>{label}</button>)}</nav>
+   <button className="nav-cta" onClick={()=>scrollToId('contacto')}>Falar connosco <ArrowRight size={16}/></button>
+   <button className="menu-toggle" onClick={()=>setMobileMenu(!mobileMenu)} aria-label="Menu">{mobileMenu?<X/>:<Menu/>}</button>
+  </div></header>
+  <section id="inicio" className="hero"><div className="hero-grid"/><div className="hero-orb orb-one"/><div className="hero-orb orb-two"/><div className="wrap hero-content">
+   <div className="eyebrow"><span/> UM ECOSSISTEMA EMPRESARIAL</div><h1>Construímos <em>possibilidades.</em></h1><p className="hero-copy">Engenharia, arquitetura, construção, serviços, experiências e negócios conectados numa mesma visão de crescimento.</p>
+   <div className="hero-actions"><button className="button gold" onClick={()=>scrollToId('ramos')}>Explorar o Grupo <ArrowRight size={18}/></button><button className="button ghost" onClick={()=>scrollToId('contacto')}>Entrar em contacto</button></div>
+   <div className="hero-foot"><span>Engenharia</span><i/><span>Arquitetura</span><i/><span>Construção</span><i/><span>Consultoria</span></div>
+  </div></section>
+  <section id="grupo" className="intro section"><div className="wrap intro-grid"><div><div className="eyebrow dark"><span/> A NOSSA VISÃO</div><h2>Peças diferentes.<br/><em>Um só movimento.</em></h2></div><div className="intro-text"><p>A Genesis Grupo S.A. organiza diferentes áreas de atuação como peças de um mesmo ecossistema empresarial. Cada ramo funciona com a sua identidade, mas todos podem criar valor em conjunto.</p><p className="muted">A estrutura apresentada reúne <strong>12 frentes</strong>, desde arquitetura e engenharia até alimentação, mobilidade, agricultura e soluções para marcas.</p></div></div></section>
+  <section id="ramos" className="branches section"><div className="wrap"><div className="section-head"><div><div className="eyebrow dark"><span/> 12 RAMOS</div><h2>O Grupo, <em>em movimento.</em></h2></div><p>Cada área representa uma possibilidade. Juntas, formam uma rede preparada para criar, executar e transformar.</p></div>
+   <div className="branch-list">{branches.map((b,i)=>{const Icon=b.icon,isOpen=open===i;return <article className={isOpen?'branch active':'branch'} key={b.title}><button className="branch-top" onClick={()=>setOpen(isOpen?null:i)}><span className="branch-number">{b.n}</span><span className="branch-icon"><Icon size={22}/></span><span className="branch-title">{b.title}</span><span className="branch-intro">{b.intro}</span><span className="branch-chevron"><ChevronDown size={21}/></span></button>{isOpen&&<div className="branch-detail"><div className="detail-line"/><div className="detail-items">{b.items.map(item=><span key={item}>{item}</span>)}</div></div>}</article>})}</div>
+  </div></section>
+  <section id="ecossistema" className="ecosystem section"><div className="wrap"><div className="eco-card"><div className="eco-copy"><div className="eyebrow"><span/> A LÓGICA GENESIS</div><h2>Do projeto à experiência.<br/><em>Da ideia ao negócio.</em></h2><p>As áreas podem existir de forma independente, mas a verdadeira força está nas conexões: projetar, construir, gerir, fornecer, servir e criar novas oportunidades dentro do mesmo ecossistema.</p><button className="button gold" onClick={()=>scrollToId('contacto')}>Vamos conversar <ArrowRight size={18}/></button></div><div className="chess"><div className="chess-caption">12<br/><span>FRENTES</span></div>{branches.map(b=><div className="chess-cell" key={b.n}><span>{b.n}</span></div>)}</div></div></div></section>
+  <section id="contacto" className="contact section"><div className="wrap contact-grid"><div><div className="eyebrow dark"><span/> CONTACTO</div><h2>Tem um projeto?<br/><em>Vamos construir juntos.</em></h2><p>Fale com a Genesis Grupo S.A. sobre projetos, parcerias, serviços ou oportunidades de negócio.</p></div><form className="contact-form" onSubmit={e=>{e.preventDefault();alert('Obrigado. O seu pedido foi registado para contacto.')}}><label>Nome<input required placeholder="O seu nome"/></label><label>Email<input required type="email" placeholder="nome@empresa.com"/></label><label>Mensagem<textarea required rows={4} placeholder="Como podemos ajudar?"/></label><button className="button dark" type="submit">Enviar mensagem <ArrowRight size={18}/></button></form></div></section>
+  <footer className="footer"><div className="wrap footer-inner"><div className="brand footer-brand"><span className="brand-mark">G</span><span><strong>GENESIS</strong><small>GRUPO S.A.</small></span></div><p>Engenharia • Arquitetura • Construção • Fiscalização • Consultoria</p><span>© {new Date().getFullYear()} Genesis Grupo S.A.</span></div></footer>
+ </main>;
 }
